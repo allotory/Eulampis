@@ -2,14 +2,7 @@
 
 import sys, time
 from datetime import datetime
-# j = '#'
-# if __name__ == '__main__':
-#     for i in range(1,61):
-#         j += '#'
-#         sys.stdout.write(str(int((i/60)*100))+'% ||'+j+'->'+"\r")
-#         sys.stdout.flush()
-#         time.sleep(0.1)
-# print()
+
 
 class Progressbar(object):
 
@@ -21,35 +14,46 @@ class Progressbar(object):
 
         self.f = sys.stdout
         self.start = datetime.now()
+
     def percentage(self, index):
+        if index >= self.finallcount:
+            index = self.finallcount
         return str(round((index / self.finallcount) * 100, 2))
 
-    def blockunit(self):
-        return int(self.finallcount / self.block_length)
+    def blockunit(self, index):
+        if index >= self.finallcount:
+            index = self.finallcount
+        return int((index * self.block_length) / self.finallcount)
 
     def runtime(self):
         now = datetime.now()
         return str(now - self.start)
 
-    def progress(self):
+    def progress(self, index):
 
-        j = 0
-        unit = self.blockunit()
+        unit = self.blockunit(index)
+        self.block = self.block_char * unit
+        
+        self.f.write(self.percentage(index) + '% ||' + self.block + '=> ' + 'Time: '+ self.runtime() + '\r')
+        self.f.flush()
 
-        for i in range(1, self.finallcount + 1):
-            j += 1
-
-            if j == unit:
-                self.block += self.block_char
-                j = 0
-            
-            self.f.write(self.percentage(i) + '% ||' + self.block + '=> ' + 'time '+ self.runtime() + '\r')
-            self.f.flush()
-            time.sleep(0.1)
+        if index >= self.finallcount:
+            self.f.write('\n')
 
 def main():
     p = Progressbar(1000)
-    p.progress()
+    for i in range(1, 1001):
+        p.progress(i)
+        time.sleep(0.01)
+
+    p = Progressbar(30, '*')
+    p.progress(2)
+    time.sleep(1)
+    p.progress(9)
+    time.sleep(1)
+    p.progress(19)
+    time.sleep(1)
+    p.progress(30)
 
 if __name__ == '__main__':
     main()
