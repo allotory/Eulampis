@@ -9,8 +9,8 @@ class Game2048(object):
         # score 
         self.score = 0
 
-        # initial of martrix
-        self.init_martrix()
+        # initial of matrix
+        self.init_matrix()
 
         # get random 2 position
         self.random_position()
@@ -25,19 +25,19 @@ class Game2048(object):
         # check movable dictionary
         self.check_movable()
 
-    def init_martrix(self):
-        # initial of martrix
+    def init_matrix(self):
+        # initial of matrix
         #   row = [0 for i in range(4)]
-        #   martrix = [row for j in range(4)]
-        self.martrix = [[0 for i in range(4)] for j in range(4)]
+        #   matrix = [row for j in range(4)]
+        self.matrix = [[0 for i in range(4)] for j in range(4)]
 
     def random_position(self):
         # random position
         #   random_pos = random.sample(range(16), 1)
-        #   self.martrix[random_pos[0] // 4][random_pos[0] % 4] = 2
+        #   self.matrix[random_pos[0] // 4][random_pos[0] % 4] = 2
         new_element = 4 if random.randrange(100) > 89 else 2
-        (i,j) = random.choice([(i,j) for i in range(4) for j in range(4) if self.martrix[i][j] == 0])
-        self.martrix[i][j] = new_element
+        (i,j) = random.choice([(i,j) for i in range(4) for j in range(4) if self.matrix[i][j] == 0])
+        self.matrix[i][j] = new_element
 
     def actions_dictionary(self):
         # system actions dictionary
@@ -103,7 +103,7 @@ class Game2048(object):
     def move(self, direction):
         if direction in self.moves:
             if self.checking(direction):
-                self.martrix = self.moves[direction](self.martrix)
+                self.matrix = self.moves[direction](self.matrix)
                 self.random_position()
                 return True
             else:
@@ -119,7 +119,7 @@ class Game2048(object):
         return False
 
     def left_row_movable(self, row):
-        # traversing martrix whether can move
+        # traversing matrix whether can move
         return any(self.row_can_movable(row, i) for i in range(len(row) - 1))
 
     def check_movable(self):
@@ -132,13 +132,13 @@ class Game2048(object):
 
     def checking(self, direction):
         if direction in self.check:
-            return self.check[direction](self.martrix)
+            return self.check[direction](self.matrix)
         else:
             return False
 
     def restart(self):
         self.score = 0
-        self.init_martrix()
+        self.init_matrix()
         self.random_position()
         self.random_position()
         self.display()
@@ -150,13 +150,13 @@ class Game2048(object):
         print('--------------')
         print('score: %s' %self.score)
         print('┌' + ('─'*5 + '┬')*3 + '─'*5 + '┐')
-        print('│%4s │%4s │%4s │%4s │' %(self.drop_zero(self.martrix[0][0]), self.drop_zero(self.martrix[0][1]), self.drop_zero(self.martrix[0][2]), self.drop_zero(self.martrix[0][3])))
+        print('│%4s │%4s │%4s │%4s │' %(self.drop_zero(self.matrix[0][0]), self.drop_zero(self.matrix[0][1]), self.drop_zero(self.matrix[0][2]), self.drop_zero(self.matrix[0][3])))
         print('├' + ('─'*5 + '┼')*3 + '─'*5 + '┤')
-        print('│%4s │%4s │%4s │%4s │' %(self.drop_zero(self.martrix[1][0]), self.drop_zero(self.martrix[1][1]), self.drop_zero(self.martrix[1][2]), self.drop_zero(self.martrix[1][3])))
+        print('│%4s │%4s │%4s │%4s │' %(self.drop_zero(self.matrix[1][0]), self.drop_zero(self.matrix[1][1]), self.drop_zero(self.matrix[1][2]), self.drop_zero(self.matrix[1][3])))
         print('├' + ('─'*5 + '┼')*3 + '─'*5 + '┤')
-        print('│%4s │%4s │%4s │%4s │' %(self.drop_zero(self.martrix[2][0]), self.drop_zero(self.martrix[2][1]), self.drop_zero(self.martrix[2][2]), self.drop_zero(self.martrix[2][3])))
+        print('│%4s │%4s │%4s │%4s │' %(self.drop_zero(self.matrix[2][0]), self.drop_zero(self.matrix[2][1]), self.drop_zero(self.matrix[2][2]), self.drop_zero(self.matrix[2][3])))
         print('├' + ('─'*5 + '┼')*3 + '─'*5 + '┤')
-        print('│%4s │%4s │%4s │%4s │' %(self.drop_zero(self.martrix[3][0]), self.drop_zero(self.martrix[3][1]), self.drop_zero(self.martrix[3][2]), self.drop_zero(self.martrix[3][3])))
+        print('│%4s │%4s │%4s │%4s │' %(self.drop_zero(self.matrix[3][0]), self.drop_zero(self.matrix[3][1]), self.drop_zero(self.matrix[3][2]), self.drop_zero(self.matrix[3][3])))
         print('└' + ('─'*5 + '┴')*3 + '─'*5 + '┘')
 
     def start(self):
@@ -164,8 +164,11 @@ class Game2048(object):
         self.display()
         while state != 'Exit':
             direction = self.get_actions()
+            
             if self.actions_dict[direction] == 'Exit':
                 state = 'Exit'
+                continue
+
             if self.actions_dict[direction] == 'Restart':
                 state = 'Restart'
                 self.restart()
