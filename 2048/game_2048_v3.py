@@ -6,6 +6,9 @@ class Game2048(object):
 
     def __init__(self):
 
+        # score 
+        self.score = 0
+
         # initial of martrix
         self.init_martrix()
 
@@ -64,6 +67,7 @@ class Game2048(object):
         for i in range(len(row)):
             if is_pair:
                 new_row.append(2 * row[i])
+                self.score += 2 * row[i]
                 is_pair = False
             else:
                 if i + 1 < len(row) and row[i] == row[i + 1]:
@@ -92,9 +96,9 @@ class Game2048(object):
         # moving function dictionary
         self.moves = {}
         self.moves['Left'] = lambda field: [self.move_left(row) for row in field]
-        self.moves['Right'] = lambda field: self.invert([self.move_left(row) for row in field])
-        self.moves['Up'] = lambda field: self.transpose([self.move_left(row) for row in self.transpose(field)])
-        self.moves['Down'] = lambda field: self.transpose(self.invert([self.move_left(row) for row in self.transpose(field)]))
+        self.moves['Right'] = lambda field: self.invert(self.moves['Left'](self.invert(field)))
+        self.moves['Up'] = lambda field: self.transpose(self.moves['Left'](self.transpose(field)))
+        self.moves['Down'] = lambda field: self.transpose(self.moves['Right'](self.transpose(field)))
 
     def move(self, direction):
         if direction in self.moves:
@@ -132,11 +136,19 @@ class Game2048(object):
         else:
             return False
 
+    def restart(self):
+        self.score = 0
+        self.init_martrix()
+        self.random_position()
+        self.random_position()
+        self.display()
+
     def drop_zero(self, num):
         return num if num else ''
 
     def display(self):
-        print('score: 0')
+        print('--------------')
+        print('score: %s' %self.score)
         print('┌' + ('─'*5 + '┬')*3 + '─'*5 + '┐')
         print('│%4s │%4s │%4s │%4s │' %(self.drop_zero(self.martrix[0][0]), self.drop_zero(self.martrix[0][1]), self.drop_zero(self.martrix[0][2]), self.drop_zero(self.martrix[0][3])))
         print('├' + ('─'*5 + '┼')*3 + '─'*5 + '┤')
@@ -154,6 +166,11 @@ class Game2048(object):
             direction = self.get_actions()
             if self.actions_dict[direction] == 'Exit':
                 state = 'Exit'
+            if self.actions_dict[direction] == 'Restart':
+                state = 'Restart'
+                self.restart()
+                continue
+
             self.move(self.actions_dict[direction])
             self.display()
 
