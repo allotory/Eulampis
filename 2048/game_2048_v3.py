@@ -47,10 +47,10 @@ class Game2048(object):
         # print(self.actions_dict)        
 
     def get_actions(self):
-        help_str = '(W)Up (S)Down (A)Left (D)Right\r\n     (R)Restart (Q)Exit\r\n'
+        help_str = '(W)Up (S)Down (A)Left (D)Right\r\n     (R)Restart (Q)Exit\r\n:'
         direct = input(help_str)
         while direct not in self.actions_dict:
-            direct = input('Illegal key, you can only press W/S/A/D/R/Q:\r\n')
+            direct = input('Illegal key, you can only press W/S/A/D/R/Q.\r\n:')
         # print(direct)
         return direct
 
@@ -164,7 +164,7 @@ class Game2048(object):
         self.display()
         while state != 'Exit':
             direction = self.get_actions()
-            
+
             if self.actions_dict[direction] == 'Exit':
                 state = 'Exit'
                 continue
