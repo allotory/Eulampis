@@ -16,6 +16,10 @@ This is a python test application repository.
 
     ![screenshot](./screenshot/img2ascii.PNG)
 
+4. Captcha
+
+    ![screenshot](./screenshot/captcha.PNG)
+
 # License
 
 The MIT License.
