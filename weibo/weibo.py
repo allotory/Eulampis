@@ -283,13 +283,22 @@ def get_code(session, request_url):
     return resp.url
 
 def get_data(id):
-    conn = mysql.connector.connect(user='root', passwd='root', db='eulampis')   
+    conn = mysql.connector.connect(user='root', passwd='root', db='eulampis')
 
     cursor = conn.cursor()
-    cursor.execute('select * from weibo where id=' + str(id))
+    cursor.execute('select wb_index from weibo_index where id=1')
+    index = cursor.fetchall()
+    print(index[0][0])
+
+    cursor = conn.cursor()
+    cursor.execute('select * from weibo where id=' + str(index[0][0]))
     values = cursor.fetchall()
 
+    cursor = conn.cursor()
+    cursor.execute('update weibo_index set wb_index=' + str(index[0][0] + 1))
+
     cursor.close()
+    conn.commit()
     conn.close()
 
     return values
@@ -317,7 +326,7 @@ def main():
         # step 4 使用获得的OAuth2.0 Access Token调用API
         print(client.get.account__get_uid())
         print(client.post.statuses__update(status='测试Python3 + OAuth 2.0发微博 '+ str(time.time())))
-        # print(client.post.statuses__update(status='测试Python3 + OAuth 2.0发微博 '+ get_data(2)[0][1] + str(time.time())))
+        # print(client.post.statuses__update(status='测试Python3 + OAuth 2.0发微博 '+ get_data()[0][1] + str(time.time())))
         # print(client.upload.statuses__upload(status='测试Python3 OAuth 2.0带图片发微博 ' + str(time.time()), pic=open('test.png', 'rb')))
 
     except Exception as pyOauth2Error:
