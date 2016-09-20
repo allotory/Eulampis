@@ -20,6 +20,10 @@ This is a python test application repository.
 
     ![screenshot](./screenshot/captcha.PNG)
 
+5. Auto Weibo
+
+    ![screenshot](./screenshot/weibo.PNG)
+
 # License
 
 The MIT License.

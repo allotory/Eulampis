@@ -282,13 +282,13 @@ def get_code(session, request_url):
     resp = session.post(request_url, headers=headers)
     return resp.url
 
-def get_data(id):
+def get_data():
     conn = mysql.connector.connect(user='root', passwd='root', db='eulampis')
 
     cursor = conn.cursor()
     cursor.execute('select wb_index from weibo_index where id=1')
     index = cursor.fetchall()
-    print(index[0][0])
+    # print(index[0][0])
 
     cursor = conn.cursor()
     cursor.execute('select * from weibo where id=' + str(index[0][0]))
@@ -312,20 +312,28 @@ def main():
         CALLBACK_URL = 'https://api.weibo.com/oauth2/default.html'
         # step 2 引导用户到授权地址
         client = APIClient(app_key=APP_KEY, app_secret=APP_SECRET, redirect_uri=CALLBACK_URL)
-        print(client.get_authorize_url())
+        # print(client.get_authorize_url())
 
-        session = login('bauble@sina.cn', 'saseverus1258740')
+        session = login('ba*****@sina.cn', '*****')
         code = get_code(session, client.get_authorize_url())[-32:]
 
         # step 3 换取Access Token
         # r = client.request_access_token(input("Input code:"))#输入授权地址中获得的CODE
         r = client.request_access_token(code)#输入授权地址中获得的CODE
         client.set_access_token(r.access_token, r.expires_in)
-        print('====' + str(r.expires_in))
+        # print('====' + str(r.expires_in))
 
         # step 4 使用获得的OAuth2.0 Access Token调用API
-        print(client.get.account__get_uid())
-        print(client.post.statuses__update(status='测试Python3 + OAuth 2.0发微博 '+ str(time.time())))
+        data = get_data()
+        name = data[0][1][1:-1]
+        spell = data[0][2][1:-1]
+        content = data[0][3][1:-1]
+        derivation = data[0][4][1:-1]
+        sample = data[0][5][1:-1]
+        blog = '『' + name + '』：' +"'"+ spell +"'，" + content  + derivation + sample
+        client.post.statuses__update(status=blog)
+        # print(client.get.account__get_uid())
+        # print(client.post.statuses__update(status='测试Python3 + OAuth 2.0发微博 '+ str(time.time())))
         # print(client.post.statuses__update(status='测试Python3 + OAuth 2.0发微博 '+ get_data()[0][1] + str(time.time())))
         # print(client.upload.statuses__upload(status='测试Python3 OAuth 2.0带图片发微博 ' + str(time.time()), pic=open('test.png', 'rb')))
 
